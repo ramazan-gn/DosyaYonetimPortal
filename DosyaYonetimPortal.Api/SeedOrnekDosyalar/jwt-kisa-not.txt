@@ -1,0 +1,5 @@
+JWT ile ilgili kısa not (örnek içerik)
+--------------------------------------
+- Token tarayıcıda sessionStorage içinde tutulur.
+- Her AJAX isteğinde Authorization: Bearer ... başlığı gönderilir.
+- Süresi dolunca tekrar giriş yapılır.

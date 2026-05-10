@@ -1,0 +1,66 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Dosya Yönetim Portalı</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="d-flex flex-column min-vh-100 portal-body">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-portal">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Files" asp-action="Index">
+                    <span class="brand-icon"><i class="bi bi-cloud-arrow-up-fill" aria-hidden="true"></i></span>
+                    Dosya Portalı
+                </a>
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Menü">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Files" asp-action="Index"><i class="bi bi-files me-1"></i>Dosyalar</a>
+                        </li>
+                        <li class="nav-item d-none" id="nav-admin">
+                            <a class="nav-link" asp-controller="Admin" asp-action="Index"><i class="bi bi-grid-1x2-fill me-1"></i>Yönetim</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto" id="nav-guest">
+                        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login"><i class="bi bi-box-arrow-in-right me-1"></i>Giriş</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Register"><i class="bi bi-person-plus me-1"></i>Kayıt</a></li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto d-none" id="nav-auth">
+                        <li class="nav-item d-flex align-items-center">
+                            <span class="navbar-text text-white small me-2" id="nav-user-email"></span>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="#" id="btn-logout"><i class="bi bi-box-arrow-left me-1"></i>Çıkış</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container py-4 flex-grow-1 portal-main">
+        @RenderBody()
+    </main>
+
+    <footer class="portal-footer border-top py-3 mt-auto">
+        <div class="container small text-center">
+            <span class="footer-inner">&copy; @DateTime.UtcNow.Year Dosya Yönetim Portalı</span>
+            <span class="text-muted"> — Internet Programcılığı II</span>
+        </div>
+    </footer>
+
+    <script>
+        window.APP_CONFIG = { apiBaseUrl: '@Configuration["Portal:ApiBaseUrl"]' };
+    </script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/portal.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

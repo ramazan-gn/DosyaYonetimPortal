@@ -1,0 +1,72 @@
+@{
+    ViewData["Title"] = "Giriş";
+}
+
+<div class="portal-auth-shell">
+    <div class="row justify-content-center w-100">
+        <div class="col-md-6 col-lg-5">
+            <div class="card portal-auth-card border-0">
+                <div class="auth-top"></div>
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-4 p-3 mb-3" style="background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(6,182,212,0.15));">
+                            <i class="bi bi-box-arrow-in-right display-6 text-primary"></i>
+                        </div>
+                        <h2 class="h3 mb-1">Hoş geldin</h2>
+                        <p class="text-muted small mb-0">Hesabınla giriş yap</p>
+                    </div>
+                    <div id="login-alert" class="alert d-none border-0 shadow-sm" role="alert"></div>
+                    <form id="form-login" novalidate>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" for="email">E-posta</label>
+                            <input type="email" class="form-control" id="email" name="email" required autocomplete="username" placeholder="ornek@posta.com" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold" for="password">Şifre</label>
+                            <input type="password" class="form-control" id="password" name="password" required autocomplete="current-password" />
+                        </div>
+                        <button type="submit" class="btn btn-portal-auth w-100 py-2">
+                            <i class="bi bi-unlock-fill me-2"></i>Giriş yap
+                        </button>
+                    </form>
+                    <p class="small text-muted mt-4 mb-0 text-center">
+                        Demo yönetici: <code class="text-dark bg-light px-2 py-1 rounded">admin@dosyaportal.local</code> /
+                        <code class="text-dark bg-light px-2 py-1 rounded">Admin123!</code>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('#form-login').on('submit', function (e) {
+                e.preventDefault();
+                var $alert = $('#login-alert');
+                $alert.addClass('d-none').removeClass('alert-danger alert-success');
+
+                var payload = {
+                    email: $('#email').val(),
+                    password: $('#password').val()
+                };
+
+                $.ajax({
+                    url: Portal.apiUrl('/api/auth/login'),
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(payload)
+                }).done(function (data) {
+                    Portal.setToken(data.accessToken);
+                    $alert.removeClass('d-none').addClass('alert-success').html('<i class="bi bi-check-circle-fill me-2"></i>Giriş başarılı, yönlendiriliyorsunuz.');
+                    Portal.refreshNav();
+                    setTimeout(function () { window.location.href = '/'; }, 600);
+                }).fail(function (xhr) {
+                    var msg = (xhr.responseJSON && xhr.responseJSON.message) || 'Giriş başarısız.';
+                    $alert.removeClass('d-none').addClass('alert-danger').html('<i class="bi bi-exclamation-circle me-2"></i>' + msg);
+                });
+            });
+        });
+    </script>
+}

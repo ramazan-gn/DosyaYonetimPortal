@@ -1,0 +1,173 @@
+@{
+    ViewData["Title"] = "Dosyalar";
+}
+
+<div class="portal-page-hero mb-4">
+    <h1><i class="bi bi-share-fill me-2"></i>Paylaşılan dosyalar</h1>
+    <p class="mb-0">Topluluk deposu — herkes görebilir ve indirebilir. Yüklemek için giriş yapın.</p>
+</div>
+
+<div id="files-alert" class="alert d-none border-0 shadow-sm" role="alert"></div>
+
+<div class="portal-card mb-4" id="upload-card">
+    <div class="portal-card-header">
+        <i class="bi bi-cloud-upload-fill fs-5"></i>
+        Yeni dosya yükle
+    </div>
+    <div class="card-body">
+        <p id="upload-login-hint" class="portal-upload-hint d-none mb-3">
+            <i class="bi bi-lock-fill me-1"></i>Dosya yüklemek için giriş yapmalısınız.
+        </p>
+        <form id="form-upload" class="row g-3 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label fw-semibold text-secondary small mb-1" for="upload-file">Dosya seç</label>
+                <input type="file" class="form-control" id="upload-file" required />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold text-secondary small mb-1" for="upload-desc">Açıklama</label>
+                <input type="text" class="form-control" id="upload-desc" maxlength="2000" placeholder="İsteğe bağlı not" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-portal-upload w-100 py-2" id="upload-submit">
+                    <i class="bi bi-upload me-1"></i>Yükle
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="portal-table-wrap">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Dosya</th>
+                <th>Yükleyen</th>
+                <th>Boyut</th>
+                <th>Yüklenme</th>
+                <th>Açıklama</th>
+                <th class="text-end">İşlem</th>
+            </tr>
+        </thead>
+        <tbody id="files-tbody">
+            <tr id="files-loading"><td colspan="6" class="text-center text-muted py-5"><span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>Yükleniyor...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            function canDelete(f) {
+                if (!Portal.token() || !Portal.userId) return false;
+                var admin = (Portal.roles || []).indexOf('Admin') >= 0;
+                return admin || f.ownerUserId === Portal.userId;
+            }
+
+            function refreshUploadUi() {
+                var logged = !!Portal.token();
+                $('#upload-login-hint').toggleClass('d-none', logged);
+                $('#upload-submit').prop('disabled', !logged);
+                $('#upload-file').prop('disabled', !logged);
+                $('#upload-desc').prop('disabled', !logged);
+            }
+
+            function loadFiles() {
+                Portal.ajax({ url: Portal.apiUrl('/api/files'), method: 'GET' })
+                    .done(function (items) {
+                        var $tb = $('#files-tbody').empty();
+                        if (!items.length) {
+                            $tb.append('<tr><td colspan="6" class="text-center text-muted py-5"><i class="bi bi-inbox fs-1 d-block mb-2 opacity-50"></i>Henüz dosya yok. İlk yüklemeyi sen yap!</td></tr>');
+                            return;
+                        }
+                        items.forEach(function (f) {
+                            var dt = new Date(f.uploadedAtUtc).toLocaleString('tr-TR');
+                            var nameEsc = $('<span>').text(f.originalFileName).html();
+                            var ownerEsc = $('<span>').text(f.ownerEmail || f.ownerUserId || '—').html();
+                            var r = $('<tr>');
+                            r.append($('<td>').html('<i class="bi bi-file-earmark-fill text-primary me-2"></i><span class="fw-medium">' + nameEsc + '</span>'));
+                            r.append($('<td>').html('<i class="bi bi-person-circle me-1 text-secondary"></i>' + ownerEsc));
+                            r.append($('<td>').append($('<span class="badge rounded-pill portal-badge-soft"></span>').text(Portal.formatBytes(f.sizeBytes))));
+                            r.append($('<td>').text(dt));
+                            r.append($('<td>').text(f.description || '—'));
+                            var actions = $('<td class="text-end text-nowrap">');
+                            var dl = $('<button type="button" class="btn btn-sm btn-portal-download"><i class="bi bi-download me-1"></i>İndir</button>')
+                                .on('click', function () {
+                                    Portal.downloadFile(f.id, f.originalFileName).fail(function () {
+                                        $('#files-alert').removeClass('d-none alert-success').addClass('alert-danger').text('İndirme başarısız.');
+                                    });
+                                });
+                            actions.append(dl);
+                            if (canDelete(f)) {
+                                var del = $('<button type="button" class="btn btn-sm btn-portal-delete ms-1"><i class="bi bi-trash me-1"></i>Sil</button>')
+                                    .on('click', function () {
+                                        if (!confirm('Bu dosyayı silmek istediğinize emin misiniz?')) return;
+                                        Portal.ajax({ url: Portal.apiUrl('/api/files/' + f.id), method: 'DELETE' })
+                                            .done(function () { loadFiles(); })
+                                            .fail(function () {
+                                                $('#files-alert').removeClass('d-none').addClass('alert-danger').text('Silme başarısız.');
+                                            });
+                                    });
+                                actions.append(del);
+                            }
+                            r.append(actions);
+                            $tb.append(r);
+                        });
+                    })
+                    .fail(function () {
+                        $('#files-tbody').html('<tr><td colspan="6" class="text-center text-danger py-5"><i class="bi bi-exclamation-triangle me-2"></i>Liste alınamadı. API çalışıyor mu?</td></tr>');
+                    });
+            }
+
+            $('#form-upload').on('submit', function (e) {
+                e.preventDefault();
+                var fileInput = $('#upload-file')[0];
+                if (!fileInput.files.length) {
+                    $('#files-alert').removeClass('d-none alert-success').addClass('alert-danger').text('Lütfen bir dosya seçin.');
+                    return;
+                }
+                if (!Portal.token()) {
+                    $('#files-alert').removeClass('d-none alert-success').addClass('alert-danger').text('Yükleme için giriş yapmanız gerekir.');
+                    return;
+                }
+                var fd = new FormData();
+                fd.append('file', fileInput.files[0]);
+                fd.append('description', $('#upload-desc').val() || '');
+
+                $('#files-alert').addClass('d-none');
+                $.ajax({
+                    url: Portal.apiUrl('/api/files'),
+                    method: 'POST',
+                    data: fd,
+                    processData: false,
+                    contentType: false,
+                    headers: { Authorization: 'Bearer ' + Portal.token() }
+                }).done(function () {
+                    $('#upload-file').val('');
+                    $('#upload-desc').val('');
+                    $('#files-alert').removeClass('d-none alert-danger').addClass('alert-success').text('Dosya başarıyla yüklendi.');
+                    loadFiles();
+                }).fail(function (xhr) {
+                    var msg;
+                    if (xhr.status === 0) {
+                        msg = 'API\'ye bağlanılamadı (CORS / sertifika / API kapalı olabilir).';
+                    } else if (xhr.status === 401) {
+                        msg = 'Oturum süresi dolmuş veya geçersiz. Tekrar giriş yapın.';
+                    } else if (xhr.status === 403) {
+                        msg = 'Bu işlem için yetkiniz yok.';
+                    } else if (xhr.status === 413) {
+                        msg = 'Dosya çok büyük (en fazla 50 MB).';
+                    } else {
+                        var serverMsg = (xhr.responseJSON && xhr.responseJSON.message) || xhr.responseText || xhr.statusText;
+                        msg = 'Yükleme başarısız (HTTP ' + xhr.status + '): ' + serverMsg;
+                    }
+                    $('#files-alert').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                });
+            });
+
+            $(document).on('portal:navrefreshed', function () {
+                refreshUploadUi();
+                loadFiles();
+            });
+        });
+    </script>
+}

@@ -1,0 +1,72 @@
+@{
+    ViewData["Title"] = "Yönetim paneli";
+}
+
+<div class="portal-page-hero mb-4">
+    <h1><i class="bi bi-grid-1x2-fill me-2"></i>Yönetim paneli</h1>
+    <p class="mb-0">Özet istatistikler ve hızlı bağlantılar.</p>
+</div>
+
+<div id="admin-guard" class="alert alert-warning border-0 shadow-sm d-none">
+    <i class="bi bi-shield-lock me-2"></i>Bu sayfa yöneticiler içindir. Giriş yapın veya yetkinizi kontrol edin.
+</div>
+
+<div id="admin-stats" class="row g-4 d-none">
+    <div class="col-md-4">
+        <div class="card portal-stat portal-stat-violet h-100">
+            <div class="card-body p-4 position-relative">
+                <div class="stat-label"><i class="bi bi-files me-1"></i>Toplam dosya</div>
+                <div class="stat-value mt-2" id="stat-files">—</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card portal-stat portal-stat-cyan h-100">
+            <div class="card-body p-4 position-relative">
+                <div class="stat-label"><i class="bi bi-hdd-stack me-1"></i>Toplam depolama</div>
+                <div class="stat-value mt-2" id="stat-bytes">—</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card portal-stat portal-stat-amber h-100">
+            <div class="card-body p-4 position-relative">
+                <div class="stat-label"><i class="bi bi-people me-1"></i>Kayıtlı kullanıcı</div>
+                <div class="stat-value mt-2" id="stat-users">—</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4 d-none" id="admin-links">
+    <a class="btn btn-primary btn-lg rounded-pill px-4 me-2 shadow-sm" style="background: linear-gradient(135deg, var(--portal-violet), var(--portal-blue)); border: none;" asp-action="Users">
+        <i class="bi bi-person-lines-fill me-2"></i>Kullanıcılar
+    </a>
+    <a class="btn btn-lg rounded-pill px-4 btn-outline-primary border-2" asp-action="Files">
+        <i class="bi bi-folder-symlink me-2"></i>Tüm dosyalar
+    </a>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            if (!Portal.token()) {
+                $('#admin-guard').removeClass('d-none');
+                return;
+            }
+            Portal.ajax({ url: Portal.apiUrl('/api/admin/stats'), method: 'GET' })
+                .done(function (s) {
+                    $('#stat-files').text(s.totalFiles);
+                    $('#stat-bytes').text(Portal.formatBytes(s.totalBytes));
+                    $('#stat-users').text(s.totalUsers);
+                    $('#admin-stats').removeClass('d-none');
+                    $('#admin-links').removeClass('d-none');
+                    $('#admin-guard').addClass('d-none');
+                })
+                .fail(function () {
+                    $('#admin-guard').removeClass('d-none').removeClass('alert-warning').addClass('alert-danger')
+                        .html('<i class="bi bi-x-octagon me-2"></i>Yönetim verilerine erişilemedi (yetki veya API kapalı).');
+                });
+        });
+    </script>
+}

@@ -1,0 +1,73 @@
+@{
+    ViewData["Title"] = "Kayıt";
+}
+
+<div class="portal-auth-shell">
+    <div class="row justify-content-center w-100">
+        <div class="col-md-6 col-lg-5">
+            <div class="card portal-auth-card border-0">
+                <div class="auth-top"></div>
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-4 p-3 mb-3" style="background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(6,182,212,0.15));">
+                            <i class="bi bi-person-plus display-6" style="color: var(--portal-violet);"></i>
+                        </div>
+                        <h2 class="h3 mb-1">Kayıt ol</h2>
+                        <p class="text-muted small mb-0">Saniyeler içinde hesap oluştur</p>
+                    </div>
+                    <div id="reg-alert" class="alert d-none border-0 shadow-sm" role="alert"></div>
+                    <form id="form-register" novalidate>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" for="fullName">Ad Soyad</label>
+                            <input type="text" class="form-control" id="fullName" name="fullName" autocomplete="name" placeholder="İsteğe bağlı" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" for="email">E-posta</label>
+                            <input type="email" class="form-control" id="email" name="email" required autocomplete="username" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold" for="password">Şifre</label>
+                            <input type="password" class="form-control" id="password" name="password" required minlength="6" autocomplete="new-password" placeholder="En az 6 karakter" />
+                        </div>
+                        <button type="submit" class="btn btn-portal-auth w-100 py-2">
+                            <i class="bi bi-rocket-takeoff me-2"></i>Hesap oluştur
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('#form-register').on('submit', function (e) {
+                e.preventDefault();
+                var $alert = $('#reg-alert');
+                $alert.addClass('d-none').removeClass('alert-danger alert-success');
+
+                var payload = {
+                    email: $('#email').val(),
+                    password: $('#password').val(),
+                    fullName: $('#fullName').val() || null
+                };
+
+                $.ajax({
+                    url: Portal.apiUrl('/api/auth/register'),
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(payload)
+                }).done(function (data) {
+                    Portal.setToken(data.accessToken);
+                    $alert.removeClass('d-none').addClass('alert-success').html('<i class="bi bi-check-circle-fill me-2"></i>Kayıt tamam, yönlendiriliyorsunuz.');
+                    Portal.refreshNav();
+                    setTimeout(function () { window.location.href = '/'; }, 600);
+                }).fail(function (xhr) {
+                    var msg = (xhr.responseJSON && xhr.responseJSON.message) || 'Kayıt başarısız.';
+                    $alert.removeClass('d-none').addClass('alert-danger').html('<i class="bi bi-exclamation-circle me-2"></i>' + msg);
+                });
+            });
+        });
+    </script>
+}

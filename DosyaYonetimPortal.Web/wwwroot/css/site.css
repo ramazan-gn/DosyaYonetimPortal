@@ -1,0 +1,419 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@500;600;700&display=swap');
+
+:root {
+  --portal-violet: #5b21b6;
+  --portal-violet-light: #7c3aed;
+  --portal-blue: #2563eb;
+  --portal-cyan: #06b6d4;
+  --portal-teal: #14b8a6;
+  --portal-amber: #f59e0b;
+  --portal-rose: #f43f5e;
+  --portal-orange: #fb923c;
+  --portal-bg-start: #ede9fe;
+  --portal-bg-mid: #e0f2fe;
+  --portal-bg-end: #ccfbf1;
+  --portal-surface: rgba(255, 255, 255, 0.92);
+  --portal-shadow: 0 12px 40px rgba(91, 33, 182, 0.12);
+  --portal-shadow-lg: 0 20px 50px rgba(37, 99, 235, 0.15);
+  --portal-radius: 1rem;
+  --portal-font: 'DM Sans', system-ui, sans-serif;
+  --portal-display: 'Outfit', var(--portal-font);
+}
+
+html {
+  font-size: 15px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+body.portal-body {
+  font-family: var(--portal-font);
+  color: #1e1b4b;
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(ellipse 120% 80% at 100% -20%, rgba(124, 58, 237, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at -10% 50%, rgba(6, 182, 212, 0.2) 0%, transparent 45%),
+    radial-gradient(ellipse 70% 50% at 100% 100%, rgba(245, 158, 11, 0.15) 0%, transparent 40%),
+    linear-gradient(165deg, var(--portal-bg-start) 0%, var(--portal-bg-mid) 45%, var(--portal-bg-end) 100%);
+  background-attachment: fixed;
+}
+
+.portal-main {
+  position: relative;
+  z-index: 1;
+}
+
+/* Navbar */
+.navbar-portal {
+  background: linear-gradient(120deg, var(--portal-violet) 0%, var(--portal-violet-light) 42%, var(--portal-blue) 100%) !important;
+  box-shadow: 0 4px 24px rgba(91, 33, 182, 0.35);
+  padding-top: 0.65rem;
+  padding-bottom: 0.65rem;
+}
+
+.navbar-portal .navbar-brand {
+  font-family: var(--portal-display);
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar-portal .navbar-brand .brand-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.65rem;
+  background: linear-gradient(145deg, rgba(255,255,255,0.35), rgba(255,255,255,0.08));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+}
+
+.navbar-portal .nav-link {
+  border-radius: 2rem;
+  padding: 0.45rem 1rem !important;
+  margin: 0 0.15rem;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.navbar-portal .nav-link:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.navbar-portal .navbar-text {
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Footer */
+.portal-footer {
+  background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(237, 233, 254, 0.95) 100%);
+  border-top: 1px solid rgba(124, 58, 237, 0.12) !important;
+  backdrop-filter: blur(8px);
+}
+
+.portal-footer .footer-inner {
+  background: linear-gradient(90deg, var(--portal-violet-light), var(--portal-cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 600;
+}
+
+/* Page header strip */
+.portal-page-hero {
+  background: linear-gradient(125deg, var(--portal-violet) 0%, var(--portal-blue) 55%, var(--portal-teal) 100%);
+  color: #fff;
+  border-radius: var(--portal-radius);
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--portal-shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.portal-page-hero::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 40%;
+  height: 180%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.portal-page-hero h1 {
+  font-family: var(--portal-display);
+  font-weight: 700;
+  font-size: 1.65rem;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.35rem;
+}
+
+.portal-page-hero p {
+  margin: 0;
+  opacity: 0.92;
+  font-size: 0.95rem;
+}
+
+/* Cards */
+.portal-card {
+  background: var(--portal-surface);
+  border: 1px solid rgba(124, 58, 237, 0.12);
+  border-radius: var(--portal-radius);
+  box-shadow: var(--portal-shadow);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.portal-card-header {
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.1), rgba(6, 182, 212, 0.12));
+  border-bottom: 1px solid rgba(124, 58, 237, 0.1);
+  padding: 1rem 1.25rem;
+  font-family: var(--portal-display);
+  font-weight: 600;
+  color: var(--portal-violet);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.portal-card .card-body {
+  padding: 1.25rem;
+}
+
+.portal-upload-hint {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(251, 146, 60, 0.12));
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #9a3412;
+  border-radius: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+/* Buttons */
+.btn-portal-upload {
+  background: linear-gradient(135deg, var(--portal-orange) 0%, var(--portal-amber) 100%);
+  border: none;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.45);
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+
+.btn-portal-upload:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(245, 158, 11, 0.5);
+  color: #fff !important;
+}
+
+.btn-portal-upload:disabled {
+  opacity: 0.55;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-portal-download {
+  border-color: var(--portal-cyan);
+  color: #0e7490 !important;
+  background: rgba(6, 182, 212, 0.08);
+  border-radius: 0.6rem;
+  font-weight: 500;
+}
+
+.btn-portal-download:hover {
+  background: var(--portal-cyan) !important;
+  border-color: var(--portal-cyan);
+  color: #fff !important;
+}
+
+.btn-portal-delete {
+  border-color: rgba(244, 63, 94, 0.55);
+  color: var(--portal-rose) !important;
+  border-radius: 0.6rem;
+  font-weight: 500;
+}
+
+.btn-portal-delete:hover {
+  background: var(--portal-rose) !important;
+  border-color: var(--portal-rose);
+  color: #fff !important;
+}
+
+.btn-portal-auth {
+  background: linear-gradient(135deg, var(--portal-violet) 0%, var(--portal-blue) 100%);
+  border: none;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.65rem 1rem;
+  box-shadow: 0 6px 20px rgba(91, 33, 182, 0.35);
+}
+
+.btn-portal-auth:hover {
+  color: #fff !important;
+  filter: brightness(1.08);
+}
+
+.btn-portal-outline {
+  border-radius: 2rem;
+  border-width: 2px;
+  font-weight: 600;
+}
+
+/* Tables */
+.portal-table-wrap {
+  border-radius: var(--portal-radius);
+  overflow: hidden;
+  border: 1px solid rgba(124, 58, 237, 0.1);
+  box-shadow: var(--portal-shadow);
+  background: var(--portal-surface);
+}
+
+.portal-table-wrap .table {
+  margin-bottom: 0;
+}
+
+.portal-table-wrap thead {
+  background: linear-gradient(90deg, var(--portal-violet) 0%, var(--portal-violet-light) 50%, var(--portal-blue) 100%);
+  color: #fff;
+}
+
+.portal-table-wrap thead th {
+  font-family: var(--portal-display);
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: none;
+  padding: 0.9rem 1rem;
+}
+
+.portal-table-wrap tbody td {
+  padding: 0.85rem 1rem;
+  vertical-align: middle;
+  border-color: rgba(124, 58, 237, 0.08);
+}
+
+.portal-table-wrap tbody tr:hover {
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.06), rgba(6, 182, 212, 0.06));
+}
+
+.portal-table-wrap.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(237, 233, 254, 0.35);
+}
+
+.portal-table-wrap.table-striped tbody tr:nth-of-type(odd):hover {
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.1), rgba(6, 182, 212, 0.08));
+}
+
+/* Admin stat tiles */
+.portal-stat {
+  border-radius: var(--portal-radius);
+  border: none;
+  color: #fff;
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--portal-shadow);
+}
+
+.portal-stat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60%;
+  height: 100%;
+  background: radial-gradient(circle at 100% 0%, rgba(255,255,255,0.22) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.portal-stat-violet {
+  background: linear-gradient(135deg, #6d28d9 0%, #a78bfa 100%);
+}
+
+.portal-stat-cyan {
+  background: linear-gradient(135deg, #0891b2 0%, #22d3ee 100%);
+}
+
+.portal-stat-amber {
+  background: linear-gradient(135deg, #d97706 0%, #fbbf24 100%);
+}
+
+.portal-stat .stat-label {
+  font-size: 0.8rem;
+  opacity: 0.92;
+  font-weight: 500;
+}
+
+.portal-stat .stat-value {
+  font-family: var(--portal-display);
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+/* Auth cards */
+.portal-auth-shell {
+  min-height: calc(100vh - 220px);
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.portal-auth-card {
+  border-radius: var(--portal-radius);
+  border: none;
+  overflow: hidden;
+  box-shadow: var(--portal-shadow-lg);
+  background: var(--portal-surface);
+}
+
+.portal-auth-card .auth-top {
+  height: 6px;
+  background: linear-gradient(90deg, var(--portal-violet), var(--portal-cyan), var(--portal-amber));
+}
+
+.portal-auth-card h2 {
+  font-family: var(--portal-display);
+  font-weight: 700;
+  color: var(--portal-violet);
+}
+
+.portal-auth-card .form-control {
+  border-radius: 0.65rem;
+  border-color: rgba(124, 58, 237, 0.2);
+  padding: 0.65rem 0.9rem;
+}
+
+.portal-auth-card .form-control:focus {
+  border-color: var(--portal-violet-light);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+}
+
+.portal-back-link {
+  color: var(--portal-violet-light);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.portal-back-link:hover {
+  color: var(--portal-blue);
+}
+
+.portal-badge-soft {
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.2), rgba(124, 58, 237, 0.15));
+  color: #5b21b6;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 0.4em 0.75em;
+}
+
+/* Focus */
+.btn:focus, .btn:active:focus, .form-control:focus {
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
+}
+
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}

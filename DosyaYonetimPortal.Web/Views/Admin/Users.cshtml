@@ -1,0 +1,54 @@
+@{
+    ViewData["Title"] = "Kullanıcılar";
+}
+
+<div class="portal-page-hero mb-4">
+    <h1><i class="bi bi-person-lines-fill me-2"></i>Kullanıcılar</h1>
+    <p class="mb-0">Sistemde kayıtlı hesaplar ve roller.</p>
+</div>
+
+<div id="msg" class="alert d-none border-0 shadow-sm"></div>
+
+<div class="portal-table-wrap table-striped">
+    <table class="table mb-0">
+        <thead>
+            <tr>
+                <th>E-posta</th>
+                <th>Ad Soyad</th>
+                <th>Roller</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+            <tr><td colspan="3" class="text-center text-muted py-5"><span class="spinner-border spinner-border-sm text-primary me-2"></span>Yükleniyor...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<p class="mt-4">
+    <a asp-action="Index" class="portal-back-link"><i class="bi bi-arrow-left-short fs-4 align-middle"></i> Panele dön</a>
+</p>
+
+@section Scripts {
+    <script>
+        $(function () {
+            if (!Portal.token()) {
+                $('#tbody').html('<tr><td colspan="3" class="text-danger py-4"><i class="bi bi-lock-fill me-2"></i>Giriş gerekli.</td></tr>');
+                return;
+            }
+            Portal.ajax({ url: Portal.apiUrl('/api/admin/users'), method: 'GET' })
+                .done(function (users) {
+                    var $tb = $('#tbody').empty();
+                    users.forEach(function (u) {
+                        var roles = (u.roles || []).join(', ');
+                        var email = $('<span>').text(u.email || '').html();
+                        var name = $('<span>').text(u.fullName || '').html();
+                        var rolesHtml = $('<span>').text(roles).html();
+                        $tb.append('<tr><td><i class="bi bi-envelope-at text-primary me-2"></i>' + email + '</td><td>' + name + '</td><td><span class="badge rounded-pill bg-light text-dark border">' + rolesHtml + '</span></td></tr>');
+                    });
+                })
+                .fail(function () {
+                    $('#tbody').html('<tr><td colspan="3" class="text-danger py-4"><i class="bi bi-exclamation-triangle me-2"></i>Liste alınamadı (yönetici yetkisi gerekir).</td></tr>');
+                });
+        });
+    </script>
+}

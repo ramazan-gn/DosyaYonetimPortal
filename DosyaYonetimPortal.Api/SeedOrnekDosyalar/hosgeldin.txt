@@ -1,0 +1,4 @@
+Dosya Yönetim Portalına hoş geldiniz.
+
+Bu dosya veritabanı ilk oluşturulduğunda otomatik olarak eklenmiş örnek kayıttır.
+İsterseniz silebilir veya indirebilirsiniz.

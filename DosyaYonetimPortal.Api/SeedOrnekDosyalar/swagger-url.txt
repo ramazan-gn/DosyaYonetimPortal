@@ -1,0 +1,5 @@
+API Swagger adresi (geliştirme):
+
+https://localhost:7013/swagger
+
+Not: Projeyi çalıştırırken API için HTTPS portunun appsettings ile uyumlu olduğundan emin olun.

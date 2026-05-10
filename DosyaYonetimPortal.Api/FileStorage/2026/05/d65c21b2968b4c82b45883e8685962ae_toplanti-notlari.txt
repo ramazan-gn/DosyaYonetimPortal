@@ -1,0 +1,6 @@
+Toplantı notları — örnek dosya
+================================
+
+1. Proje teslim tarihlerini kontrol edin.
+2. GitHub deposunu güncel tutun.
+3. API ve MVC projelerini birlikte çalıştırın.
